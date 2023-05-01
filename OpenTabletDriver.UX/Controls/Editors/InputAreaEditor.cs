@@ -16,6 +16,8 @@ namespace OpenTabletDriver.UX.Controls.Editors
         private readonly NumericMaskedTextBox<float> _yPosition;
         private readonly NumericMaskedTextBox<float> _rotation;
 
+        private readonly NumericMaskedTextBox<float> _angle;  //1
+
         public InputAreaEditor(App app, IControlBuilder controlBuilder)
         {
             _app = app;
@@ -25,6 +27,7 @@ namespace OpenTabletDriver.UX.Controls.Editors
             _xPosition = TextBoxFor(m => m.Input!.XPosition);
             _yPosition = TextBoxFor(m => m.Input!.YPosition);
             _rotation = TextBoxFor(m => m.Input!.Rotation);
+            _angle = TextBoxFor(m => m.Input!.Angle);  //2
 
             var areaDisplay = controlBuilder.Build<InputAreaDisplay>();
             _width.ValueChanged += (_, _) => areaDisplay.Invalidate();
@@ -32,6 +35,7 @@ namespace OpenTabletDriver.UX.Controls.Editors
             _xPosition.ValueChanged += (_, _) => areaDisplay.Invalidate();
             _yPosition.ValueChanged += (_, _) => areaDisplay.Invalidate();
             _rotation.ValueChanged += (_, _) => areaDisplay.Invalidate();
+            _angle.ValueChanged += (_, _) => areaDisplay.Invalidate();  //4
 
             PointF? prevPos = null;
             void AreaMouseHandler(object? _, MouseEventArgs e)
@@ -151,6 +155,7 @@ namespace OpenTabletDriver.UX.Controls.Editors
                     CreateUnitBox("X", _xPosition, "mm"),
                     CreateUnitBox("Y", _yPosition, "mm"),
                     CreateUnitBox("Rotation", _rotation, "°"),
+                    CreateUnitBox("Angle", _angle, "°"),   //3
                     new StackLayoutItem(null, true)
                 }
             };

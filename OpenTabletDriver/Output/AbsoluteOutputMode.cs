@@ -122,6 +122,7 @@ namespace OpenTabletDriver.Output
 
         private static Matrix3x2 CalculateTransformation(AngledArea input, Area output, DigitizerSpecifications digitizer)
         {
+            Log.Debug("test","1");
             // Convert raw tablet data to millimeters
             var res = Matrix3x2.CreateScale(
                 digitizer.Width / digitizer.MaxX,
@@ -134,6 +135,13 @@ namespace OpenTabletDriver.Output
             // Apply rotation
             res *= Matrix3x2.CreateRotation(
                 (float)(-input.Rotation * System.Math.PI / 180));
+            // Apply scew
+            float degree = System.Convert.ToSingle(System.Math.PI / 180) * (90 - input.Angle);
+            Log.Debug("test",input.Angle.ToString());
+            Log.Debug("test",degree.ToString());
+            res *= Matrix3x2.CreateSkew(
+                degree, 0
+            );
 
             // Scale millimeters to pixels
             res *= Matrix3x2.CreateScale(
@@ -142,7 +150,7 @@ namespace OpenTabletDriver.Output
             // Translate output to virtual screen coordinates
             res *= Matrix3x2.CreateTranslation(
                 output.XPosition, output.YPosition);
-
+            Log.Debug("test","2");
             return res;
         }
 
@@ -197,7 +205,8 @@ namespace OpenTabletDriver.Output
                 Height = digitizer.Height,
                 XPosition = digitizer.Width / 2,
                 YPosition = digitizer.Height / 2,
-                Rotation = 0
+                Rotation = 0,
+                Angle = 90
             };
         }
 

@@ -13,6 +13,7 @@ namespace OpenTabletDriver
     public class AngledArea : Area
     {
         private float _rotation;
+        private float _angle;
 
         /// <summary>
         /// The rotation angle of the area.
@@ -22,6 +23,12 @@ namespace OpenTabletDriver
         {
             set => RaiseAndSetIfChanged(ref _rotation, value % 360);
             get => _rotation;
+        }
+
+        public float Angle
+        {
+            set => RaiseAndSetIfChanged(ref _angle, value % 360);
+            get => _angle;
         }
 
         public override Vector2[] GetCorners()

@@ -115,30 +115,49 @@ namespace OpenTabletDriver.UX.Controls.Editors
                 var offset = new PointF(area.XPosition, area.YPosition) * Scale;
                 graphics.TranslateTransform(offset);
 
-                if (area is AngledArea angledArea)
-                    graphics.RotateTransform(angledArea.Rotation);
+                var size = new SizeF(area.Width, area.Height) * Scale; 
 
-                var size = new SizeF(area.Width, area.Height) * Scale;
-                var foreground = RectangleF.FromCenter(PointF.Empty, size);
-                graphics.FillRectangle(ForegroundFillColor, foreground);
-                graphics.DrawRectangle(ForegroundBorderColor, foreground);
+                if (area is AngledArea angledArea){
+                    graphics.RotateTransform(angledArea.Rotation);  ///  Здесь вращается зона
+
+                    float angle = angledArea.Angle;
+
+                    float topOffset = Convert.ToSingle(area.Height/Math.Tan(angle*(Math.PI/180))) * Scale;
+
+                    PointF point1 = new PointF(0-area.Width/2+topOffset/2, 0-area.Height/2) * Scale; //верх лево
+                    PointF point2 = new PointF(0-area.Width/2-topOffset/2, 0+area.Height/2) * Scale; //низ лево
+                    PointF point3 = new PointF(0+area.Width/2-topOffset/2, 0+area.Height/2) * Scale; //низ право
+                    PointF point4 = new PointF(0+area.Width/2+topOffset/2, 0-area.Height/2) * Scale; //верх право
+                    PointF[] areaPoints = {point1, point2, point3, point4};
+
+                    graphics.FillPolygon(ForegroundFillColor, areaPoints);
+                    graphics.DrawPolygon(ForegroundBorderColor, areaPoints);
+                    }
+
+                else{
+                    var foreground = RectangleF.FromCenter(PointF.Empty, size);
+                    graphics.FillRectangle(ForegroundFillColor, foreground);
+                    graphics.DrawRectangle(ForegroundBorderColor, foreground); 
+                    }
+
+                
 
                 var centerPoint = RectangleF.FromCenter(PointF.Empty, new SizeF(3, 3));
-                graphics.DrawEllipse(SystemColors.ControlText, centerPoint);
+                graphics.DrawEllipse(SystemColors.ControlText, centerPoint);             //точка в центре
 
                 var ratioText = CreateText($"{Math.Round(area.Width / area.Height, 4)}");
                 var ratioSize = ratioText.Measure();
-                graphics.DrawText(ratioText, new PointF(-ratioSize.Width / 2, ratioSize.Height / 2));
+                graphics.DrawText(ratioText, new PointF(-ratioSize.Width / 2, ratioSize.Height / 2));        //соотношение
 
-                var widthText = CreateText(area.Width + Unit);
+                var widthText = CreateText(area.Width + Unit + " X");
                 var widthSize = widthText.Measure();
-                graphics.DrawText(widthText, new PointF(-widthSize.Width / 2, size.Height / 2 - widthSize.Height - 5));
+                graphics.DrawText(widthText, new PointF(-widthSize.Width / 2, size.Height / 2 - widthSize.Height - 5));           //ширина
 
                 graphics.RotateTransform(270);
 
-                var heightText = CreateText(area.Height + Unit);
+                var heightText = CreateText(area.Height + Unit + " Y");
                 var heightSize = heightText.Measure();
-                graphics.DrawText(heightText, new PointF(-heightSize.Width / 2, size.Width / 2 - heightSize.Height - 5));
+                graphics.DrawText(heightText, new PointF(-heightSize.Width / 2, size.Width / 2 - heightSize.Height - 5));      //высота
             }
         }
 
